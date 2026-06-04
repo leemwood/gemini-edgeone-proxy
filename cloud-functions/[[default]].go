@@ -1093,17 +1093,18 @@ var appMux *http.ServeMux
 func init() {
 	pool := newTokenPool()
 	if pool == nil {
-		log.Fatal("no TOKEN* environment variables configured")
+		log.Print("WARNING: no TOKEN* environment variables configured")
+	} else {
+		log.Printf("loaded %d Gemini tokens", pool.count())
 	}
-	log.Printf("loaded %d Gemini tokens", pool.count())
 
 	client := newGeminiClient(pool)
-	log.Println("Gemini client ready")
 
 	if !hasApiKey() {
-		log.Fatal("APIKEY environment variable not set")
+		log.Print("WARNING: APIKEY environment variable not set")
+	} else {
+		log.Print("APIKEY configured")
 	}
-	log.Println("APIKEY configured")
 
 	mux := http.NewServeMux()
 
@@ -1137,8 +1138,8 @@ func init() {
 	appMux = mux
 }
 
-// === main (Handler mode: EdgeOne calls indexHandler) ===
+// === main (Handler mode: EdgeOne calls defaultHandler) ===
 
-func indexHandler(w http.ResponseWriter, r *http.Request) {
+func defaultHandler(w http.ResponseWriter, r *http.Request) {
 	appMux.ServeHTTP(w, r)
 }
