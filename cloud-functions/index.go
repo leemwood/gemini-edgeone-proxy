@@ -1143,12 +1143,3 @@ func init() {
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	appMux.ServeHTTP(w, r)
 }
-
-func main() {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "9000"
-	}
-	log.Printf("listening on :%s", port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), appMux))
-}
