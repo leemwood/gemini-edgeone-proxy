@@ -1117,6 +1117,14 @@ func init() {
 		w.Write([]byte("ok"))
 	})
 
+	mux.HandleFunc("/debug", func(w http.ResponseWriter, r *http.Request) {
+		writeJSON(w, http.StatusOK, map[string]any{
+			"method": r.Method,
+			"path":   r.URL.Path,
+			"query":  r.URL.RawQuery,
+		})
+	})
+
 	mux.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" {
 			http.NotFound(w, r)
