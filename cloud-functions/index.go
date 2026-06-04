@@ -1088,7 +1088,9 @@ func handleModels(client *geminiClient) http.HandlerFunc {
 
 // === main ===
 
-func main() {
+var appMux *http.ServeMux
+
+func init() {
 	pool := newTokenPool()
 	if pool == nil {
 		log.Fatal("no TOKEN* environment variables configured")
@@ -1114,13 +1116,22 @@ func main() {
 		w.Write([]byte("ok"))
 	})
 
+	appMux = mux
+}
+
+// === main (Handler mode: EdgeOne calls indexHandler) ===
+
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+	appMux.ServeHTTP(w, r)
+}
+
+func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
-
 	log.Printf("listening on :%s", port)
-	if err := http.ListenAndServe(fmt.Sprintf(":%s", port), mux); err != nil {
+	if err := http.ListenAndServe(fmt.Sprintf(":%s", port), appMux); err != nil {
 		log.Fatal(err)
 	}
 }
