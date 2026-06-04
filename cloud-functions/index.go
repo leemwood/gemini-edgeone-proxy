@@ -1144,6 +1144,11 @@ func init() {
 	})
 
 	appMux = mux
+
+	go func() {
+		log.Printf("internal server on :9000")
+		log.Fatal(http.ListenAndServe(":9000", appMux))
+	}()
 }
 
 // === main (Handler mode: EdgeOne calls indexHandler) ===
