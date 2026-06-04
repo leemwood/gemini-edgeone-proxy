@@ -1,4 +1,4 @@
-package main
+package proxy
 
 import (
 	"bytes"
@@ -10,13 +10,13 @@ import (
 
 const geminiBaseURL = "https://generativelanguage.googleapis.com/v1beta"
 
-type geminiClient struct {
-	pool   *tokenPool
+type GeminiClient struct {
+	pool   *TokenPool
 	client *http.Client
 }
 
-func newGeminiClient(pool *tokenPool) *geminiClient {
-	return &geminiClient{
+func NewGeminiClient(pool *TokenPool) *GeminiClient {
+	return &GeminiClient{
 		pool: pool,
 		client: &http.Client{
 			Timeout: 120 * time.Second,
@@ -24,7 +24,7 @@ func newGeminiClient(pool *tokenPool) *geminiClient {
 	}
 }
 
-func (c *geminiClient) do(path string, body []byte) (*http.Response, []byte, string, error) {
+func (c *GeminiClient) do(path string, body []byte) (*http.Response, []byte, string, error) {
 	token, err := c.pool.getToken()
 	if err != nil {
 		return nil, nil, "", fmt.Errorf("token error: %w", err)
@@ -57,7 +57,7 @@ func (c *geminiClient) do(path string, body []byte) (*http.Response, []byte, str
 	return resp, respBody, token, nil
 }
 
-func (c *geminiClient) doWithRetry(path string, body []byte, maxRetries int) (*http.Response, []byte, error) {
+func (c *GeminiClient) doWithRetry(path string, body []byte, maxRetries int) (*http.Response, []byte, error) {
 	var lastErr error
 	for i := 0; i <= maxRetries; i++ {
 		resp, respBody, _, err := c.do(path, body)

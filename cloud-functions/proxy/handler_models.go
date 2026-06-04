@@ -1,4 +1,4 @@
-package main
+package proxy
 
 import (
 	"encoding/json"
@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func handleModels(client *geminiClient) http.HandlerFunc {
+func HandleModels(client *GeminiClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		token, err := client.pool.getToken()
 		if err != nil {

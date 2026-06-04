@@ -1,4 +1,4 @@
-package main
+package proxy
 
 import (
 	"fmt"
@@ -14,12 +14,12 @@ type tokenState struct {
 	cooldown time.Time
 }
 
-type tokenPool struct {
+type TokenPool struct {
 	mu     sync.Mutex
 	tokens []tokenState
 }
 
-func newTokenPool() *tokenPool {
+func NewTokenPool() *TokenPool {
 	var tokens []tokenState
 	for _, env := range os.Environ() {
 		k, v, ok := strings.Cut(env, "=")
@@ -36,10 +36,10 @@ func newTokenPool() *tokenPool {
 	if len(tokens) == 0 {
 		return nil
 	}
-	return &tokenPool{tokens: tokens}
+	return &TokenPool{tokens: tokens}
 }
 
-func (p *tokenPool) getToken() (string, error) {
+func (p *TokenPool) getToken() (string, error) {
 	if p == nil {
 		return "", fmt.Errorf("no tokens configured")
 	}
@@ -57,7 +57,7 @@ func (p *tokenPool) getToken() (string, error) {
 	return "", fmt.Errorf("all tokens in cooldown")
 }
 
-func (p *tokenPool) markRateLimited(token string) {
+func (p *TokenPool) markRateLimited(token string) {
 	if p == nil {
 		return
 	}
@@ -70,4 +70,11 @@ func (p *tokenPool) markRateLimited(token string) {
 			return
 		}
 	}
+}
+
+func (p *TokenPool) Len() int {
+	if p == nil {
+		return 0
+	}
+	return len(p.tokens)
 }

@@ -1,4 +1,4 @@
-package main
+package proxy
 
 import (
 	"encoding/json"
@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func handleResponses(client *geminiClient) http.HandlerFunc {
+func HandleResponses(client *GeminiClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req ResponsesRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {

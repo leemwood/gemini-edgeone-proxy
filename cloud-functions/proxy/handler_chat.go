@@ -1,4 +1,4 @@
-package main
+package proxy
 
 import (
 	"bufio"
@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func handleChatCompletions(client *geminiClient) http.HandlerFunc {
+func HandleChatCompletions(client *GeminiClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req ChatRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -60,7 +60,7 @@ func handleChatCompletions(client *geminiClient) http.HandlerFunc {
 	}
 }
 
-func handleChatStream(w http.ResponseWriter, client *geminiClient, path string, body []byte, model string) {
+func handleChatStream(w http.ResponseWriter, client *GeminiClient, path string, body []byte, model string) {
 	streamPath := strings.Replace(path, ":generateContent", ":streamGenerateContent?alt=sse", 1)
 
 	resp, respBody, _, err := client.do(streamPath, body)

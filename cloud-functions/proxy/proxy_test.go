@@ -1,4 +1,4 @@
-package main
+package proxy
 
 import (
 	"bytes"
@@ -9,8 +9,8 @@ import (
 )
 
 func TestAuthMiddleware(t *testing.T) {
-	apiKey = "sk-test"
-	handler := authMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	ApiKey = "sk-test"
+	handler := AuthMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
 	}))
 
@@ -214,7 +214,7 @@ func TestTokenPool(t *testing.T) {
 	t.Setenv("TOKEN1", "key1")
 	t.Setenv("TOKEN2", "key2")
 
-	pool := newTokenPool()
+	pool := NewTokenPool()
 	if pool == nil {
 		t.Fatal("pool is nil")
 	}

@@ -1,4 +1,4 @@
-package main
+package proxy
 
 import (
 	"net/http"
@@ -6,15 +6,19 @@ import (
 	"strings"
 )
 
-var apiKey string
+var ApiKey string
 
 func init() {
-	apiKey = os.Getenv("APIKEY")
+	ApiKey = os.Getenv("APIKEY")
 }
 
-func authMiddleware(next http.Handler) http.Handler {
+func HasApiKey() bool {
+	return ApiKey != ""
+}
+
+func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if apiKey == "" {
+		if ApiKey == "" {
 			http.Error(w, `{"error":{"message":"server not configured: APIKEY not set","type":"server_error"}}`, http.StatusInternalServerError)
 			return
 		}
@@ -24,7 +28,7 @@ func authMiddleware(next http.Handler) http.Handler {
 			return
 		}
 		token := strings.TrimPrefix(auth, "Bearer ")
-		if token != apiKey {
+		if token != ApiKey {
 			http.Error(w, `{"error":{"message":"invalid API key","type":"unauthorized"}}`, http.StatusUnauthorized)
 			return
 		}

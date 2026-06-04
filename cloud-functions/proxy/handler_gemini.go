@@ -1,4 +1,4 @@
-package main
+package proxy
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func handleGeminiNative(client *geminiClient) http.HandlerFunc {
+func HandleGeminiNative(client *GeminiClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		path := r.PathValue("path")
 
