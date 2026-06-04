@@ -1138,8 +1138,17 @@ func init() {
 	appMux = mux
 }
 
-// === main (Handler mode: EdgeOne calls defaultHandler) ===
+// === main (Handler mode: EdgeOne calls indexHandler) ===
 
-func defaultHandler(w http.ResponseWriter, r *http.Request) {
+func indexHandler(w http.ResponseWriter, r *http.Request) {
 	appMux.ServeHTTP(w, r)
+}
+
+func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "9000"
+	}
+	log.Printf("listening on :%s", port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), appMux))
 }
