@@ -253,7 +253,7 @@ export async function onRequest(context) {
   if (tokenPool.length === 0) initTokens(env);
 
   // Landing page
-  if (method === "GET" && pathname === "/") {
+  if (method === "GET" && (pathname === "/" || pathname === "")) {
     return json({
       service: "Gemini EdgeOne Proxy",
       endpoints: {
